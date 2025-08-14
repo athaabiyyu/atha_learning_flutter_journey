@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:the_basic/view/go-moon-app/home.dart';
 import 'package:the_basic/view/go-moon-app/tes.dart';
+import 'package:the_basic/view/koperasi-rsb/login-screen.dart';
+import 'package:the_basic/widget-globals/colors.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,10 +16,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.black,
+        scaffoldBackgroundColor: lightGreen,
         useMaterial3: true,
       ),
-      home: GoMoonHome(),
+      home: LoginScreen(),
     );
   }
 }
