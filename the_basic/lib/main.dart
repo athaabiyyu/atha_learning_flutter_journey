@@ -16,10 +16,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        scaffoldBackgroundColor: lightGreen,
+        scaffoldBackgroundColor: black,
         useMaterial3: true,
       ),
-      home: LoginScreen(),
+      home: GoMoonHome(), 
     );
   }
 }
