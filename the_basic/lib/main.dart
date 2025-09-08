@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:the_basic/view/go-moon-app/home.dart';
 import 'package:the_basic/view/go-moon-app/tes.dart';
+import 'package:the_basic/view/taskly-app/home.dart';
 import 'package:the_basic/view/koperasi-rsb/login-screen.dart';
 import 'package:the_basic/widget-globals/colors.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter('hive_boxes');
   runApp(const MyApp());
 }
 
@@ -14,12 +18,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Taskly',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: black,
-        useMaterial3: true,
+        primarySwatch: Colors.red,
+        useMaterial3: false,
       ),
-      home: GoMoonHome(), 
+      home: TasklyHome(), 
     );
   }
 }
