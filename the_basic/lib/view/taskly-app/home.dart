@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class TasklyHome extends StatefulWidget {
   @override
@@ -26,8 +27,22 @@ class _TasklyHomeState extends State<TasklyHome> {
         centerTitle: true,
         toolbarHeight: _deviceHeight * 0.15,
       ),
-      body: _listView(),
+      body: _taskView(),
       floatingActionButton: addTaskButton(),
+    );
+  }
+
+  Widget _taskView() {
+    return FutureBuilder(
+      //future: Hive.openBox('tasks'),
+      future: Hive.openBox('tasks'),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if(snapshot.hasData) {
+          return _listView();
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      }
     );
   }
 
@@ -51,11 +66,24 @@ class _TasklyHomeState extends State<TasklyHome> {
 
   Widget addTaskButton() {
     return FloatingActionButton(
-      onPressed: () {
-        print('Add Task');
-      },
+      onPressed: _displatTaskPopUp,
       backgroundColor: Colors.red,
       child: const Icon(Icons.add, size: 40,),
+    );
+  }
+
+  void _displatTaskPopUp() {
+    showDialog(
+      context: context, 
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add New Task!'),
+          content: TextField(
+            onSubmitted: (_value) {},
+            onChanged: (_value) {},
+          ),
+        );
+      },
     );
   }
 }
