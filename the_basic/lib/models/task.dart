@@ -1,29 +1,30 @@
 class Task {
   String content;
-  DateTime timeStamp;
-  bool isDone;
+  DateTime timestamp;
+  bool done;
 
   Task({
     required this.content,
-    required this.timeStamp,
-    this.isDone = false,
+    required this.timestamp,
+    required this.done,
   });
 
-  // ubah data ke bentuk map agar bisa disimpan di database
-  Map<String, dynamic> toMap() {               // key string, dan value dynamis / bebas
+  // ubah object menjadi Map (key - value) agar bisa disimpan di hive
+  Map<String, dynamic> toMap() {
     return {
-      'content': content,
-      'timeStamp': timeStamp.toString(), 
-      'isDone': isDone,
+      'content' : content,
+      'timestamp' : timestamp.toString(),
+      'done' : done,
     };
   }
 
-  // ubah data dari bentuk map ke bentuk Object Task
+  // ubah dari key-value menjadi object lagi agar bisa dipakai di UI
   factory Task.fromMap(Map<String, dynamic> taskMap) {
-    return Task(
+    return Task (
       content: taskMap['content'],
-      timeStamp: DateTime.parse(taskMap['timeStamp']),
-      isDone: taskMap['isDone'],
+      timestamp: DateTime.parse(taskMap['timestamp']),
+      done: taskMap['done'],
     );
   }
 }
+

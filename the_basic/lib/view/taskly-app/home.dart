@@ -1,44 +1,76 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive/hive.dart';
+import 'package:the_basic/models/task.dart';
 
 class TasklyHome extends StatefulWidget {
+  TasklyHome({super.key});
+
   @override
   State<TasklyHome> createState() => _TasklyHomeState();
 }
 
 class _TasklyHomeState extends State<TasklyHome> {
 
-  late double _deviceHeight;
-  late double _deviceWidth;
+  Box? _box;
 
   @override
   Widget build(BuildContext context) {
-
-    _deviceHeight = MediaQuery.of(context).size.height;
-    _deviceWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Taskly',
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
-        ),
-        backgroundColor: Colors.red,
-        centerTitle: true,
-        toolbarHeight: _deviceHeight * 0.15,
+        title: const Text('Taksly Home'),
       ),
-      body: _taskView(),
-      floatingActionButton: addTaskButton(),
+      body: _showList(),
+      floatingActionButton: _addTaskButton(),
     );
   }
 
-  Widget _taskView() {
+  Widget _taksList() {
+    Task new_taks = Task(content: "Pray", timestamp: DateTime.now(), done: false);
+    _box?.add(new_taks.toMap());
+    return ListView(
+      children: [
+        ListTile(
+          title: const Text(
+            "Do Laundry",
+            style: TextStyle(
+              decoration: TextDecoration.lineThrough,
+            ),
+          ),
+          subtitle: Text(
+            DateTime.now().toString(),
+          ),
+          trailing: const Icon(
+            Icons.check_box_outlined,
+            color: Colors.red,
+          ),
+        ),
+        ListTile(
+          title: const Text(
+            "Do Breakfast",
+            style: TextStyle(
+              decoration: TextDecoration.lineThrough,
+            ),
+          ),
+          subtitle: Text(
+            DateTime.now().toString(),
+          ),
+          trailing: const Icon(
+            Icons.check_box_outlined,
+            color: Colors.red,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _showList() {
     return FutureBuilder(
-      //future: Hive.openBox('tasks'),
-      future: Hive.openBox('tasks'),
+      future: Hive.openBox('tasks'), 
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if(snapshot.hasData) {
-          return _listView();
+        if (snapshot.connectionState == ConnectionState.done) {
+          _box = snapshot.data;
+          return _taksList();
         } else {
           return const Center(child: CircularProgressIndicator());
         }
@@ -46,44 +78,29 @@ class _TasklyHomeState extends State<TasklyHome> {
     );
   }
 
-  Widget _listView() {
-    return ListView(
-      children: [
-        Padding(padding: EdgeInsets.symmetric(vertical: _deviceHeight * 0.01)),
-        ListTile(
-          title: const Text('Task 1', style: TextStyle(fontSize: 20),),
-          subtitle: Text(DateTime.now().toString(), style: const TextStyle(fontSize: 15)),
-          trailing: const Icon(Icons.check_box_outlined, color: Colors.red,),
-        ),
-        ListTile(
-          title: const Text('Task 2s', style: TextStyle(fontSize: 20),),
-          subtitle: Text(DateTime.now().toString(), style: const TextStyle(fontSize: 15)),
-          trailing: const Icon(Icons.check_box_outlined, color: Colors.red,),
-        ),
-      ],
-    );
-  }
-
-  Widget addTaskButton() {
+  Widget _addTaskButton() {
     return FloatingActionButton(
-      onPressed: _displatTaskPopUp,
-      backgroundColor: Colors.red,
-      child: const Icon(Icons.add, size: 40,),
+      onPressed: () {
+        _dialogAddTask();
+      },
+      child: const Icon(Icons.add),
     );
   }
 
-  void _displatTaskPopUp() {
+  void _dialogAddTask() {
     showDialog(
-      context: context, 
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add New Task!'),
-          content: TextField(
-            onSubmitted: (_value) {},
-            onChanged: (_value) {},
-          ),
-        );
-      },
-    );
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Add New Task !"),
+            content: TextField(
+              onChanged: (value) {
+                if (kDebugMode) {
+                  print("User mengetik: $value");
+                }
+              },
+            ),
+          );
+        });
   }
 }

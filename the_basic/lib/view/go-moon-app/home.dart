@@ -1,98 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:the_basic/widgets/dropdown_custom.dart';
 
-class GoMoonHome extends StatefulWidget {
+class GoMoon extends StatefulWidget {
+  const GoMoon({super.key});
+
   @override
-  State<GoMoonHome> createState() => _GoMoonHomeState();
+  State<GoMoon> createState() => _GoMoonState();
 }
 
-class _GoMoonHomeState extends State<GoMoonHome> {
-  late double _deviceHeight;
-  late double _deviceWidth;
-
-  // Daftar Pilihan stasiun
-  final List<String> _stationsList = [
-    'Apollo 11',
-    'Apollo 12',
-    'Apollo 14',
-    'Apollo 15',
-    'Apollo 16',
-    'Apollo 17',
-  ];
-  // Nilai yang dipilih (default: null)
-  String? _selectedStation;
-
-  // Daftar pilihan jarak
-  final List<String> _distanceList = [
-    'Low Earth Orbit (LEO)',
-    'Geostationary Orbit (GEO)',
-    'Moon Orbit',
-    'Mars Orbit',
-  ];
-  // Nilai yang dipilih (default: null)
-  String? _selectedDistance;
-
-  final List<String> _priceList = [
-    'Rp 1.000.000',
-    'Rp 5.000.000',
-  ];
-  // Nilai yang dipilih (default: null)
-  String? _selectedPrice;
-
+class _GoMoonState extends State<GoMoon> {
   @override
   Widget build(BuildContext context) {
-    _deviceHeight = MediaQuery.of(context).size.height;
-    _deviceWidth = MediaQuery.of(context).size.width;
+    late double deviceHeight = MediaQuery.of(context).size.height;
+    late double deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            _astralImageWidget(),
-            Column(
+        backgroundColor: Colors.black,
+        body: SafeArea(
+            child: SizedBox(
+          height: deviceHeight,
+          width: deviceWidth,
+          child: Padding(
+            padding: EdgeInsets.all(deviceWidth * 0.05),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Bagian atas (judul + row dropdown)
-                Expanded(
-                  child: Column(
-                    children: [
-                      _pageTitleWidget(),
-
-                    ],
-                  ),
-                ),
-
-                // Bagian bawah (dropdown stasiun)
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: _deviceWidth * 0.05,
-                    vertical: _deviceHeight * 0.05,
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(child: _stationsDistanceDropdownWidget()),
-                          SizedBox(width: _deviceWidth * 0.05),
-                          Expanded(child: _stationsPriceDropDownWidget()),
-                        ],
-                      ),
-                      SizedBox(height: _deviceHeight * 0.02),
-                      _stationsDropdownWidget(),
-                    ],
-                  ),
-                ),
+                pageTitleWidget(),
+                astroImageWidget(),
+                destinationDropdownWidget(),
+                travellerInformationWidget()
               ],
-            )
-          ],
-        ),
-      ),
-    );
+            ),
+          ),
+        )));
   }
 
-  Widget _astralImageWidget() {
+  Widget astroImageWidget() {
+    final screenHeight = MediaQuery.of(context).size.height;
     return Container(
-      width: _deviceWidth,
-      height: _deviceHeight,
+      height: screenHeight * 0.4,
       decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/images/moon.png'),
@@ -102,132 +49,62 @@ class _GoMoonHomeState extends State<GoMoonHome> {
     );
   }
 
-  Widget _pageTitleWidget() {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: _deviceWidth * 0.05,
+  Widget pageTitleWidget() {
+    return const Text(
+      'GO MOON',
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 70,
+        fontWeight: FontWeight.bold,
       ),
-      child: const Text(
-        'Go Moon',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 70,
-          fontWeight: FontWeight.bold,
+    );
+  }
+
+  Widget destinationDropdownWidget() {
+    List<String> destinations = ['Moon', 'Mars', 'Jupiter', 'Saturn'];
+
+    return Container(
+        decoration: BoxDecoration(
+          color: const Color.fromRGBO(53, 53, 53, 1.0),
+          borderRadius: BorderRadius.circular(8),
         ),
-      ),
-    );
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        margin: const EdgeInsets.all(8),
+        child: CustomDropdown(
+            value: destinations,
+            width: double.infinity,
+            hintText: 'Select Destination'));
   }
 
-  Widget _stationsDistanceDropdownWidget() {
+  Widget travellerInformationWidget() {
+    List<String> destinations = ['Moon', 'Mars', 'Jupiter', 'Saturn'];
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(10),
+        color: const Color.fromRGBO(53, 53, 53, 1.0),
+        borderRadius: BorderRadius.circular(8),
       ),
-      child: DropdownButton<String>(
-          // Start - Styling dropdown
-          dropdownColor: Colors.grey.withOpacity(0.3),
-          borderRadius: BorderRadius.circular(10),
-          isExpanded: true,
-          underline: Container(),
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 30,
-          ),
-          value: _selectedDistance,
-          hint: const Text(
-            "Pilih Jarak",
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-          // End - Styling dropdown
-          items: _distanceList.map((distance) {
-            return DropdownMenuItem<String>(
-              value: distance,
-              child: Text(distance),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              _selectedDistance = value;
-            });
-          }),
-    );
-  }
-
-  Widget _stationsPriceDropDownWidget() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: DropdownButton<String>(
-          // Start - Styling dropdown
-          dropdownColor: Colors.grey.withOpacity(0.3),
-          borderRadius: BorderRadius.circular(10),
-          isExpanded: true,
-          underline: Container(),
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 30,
-          ),
-          value: _selectedPrice,
-          hint: const Text(
-            "Pilih Harga",
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-          // End - Styling dropdown
-
-          items: _priceList.map((price) {
-            return DropdownMenuItem<String>(
-              value: price,
-              child: Text(price),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              _selectedDistance = value;
-            });
-          }),
-    );
-  }
-
-  Widget _stationsDropdownWidget() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: DropdownButton<String>(
-
-            // Start - Styling dropdown
-            dropdownColor: Colors.grey.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(10),
-            isExpanded: true,
-            underline: Container(),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 30,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      margin: const EdgeInsets.all(8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: CustomDropdown(
+              value: destinations,
+              width: double.infinity,
+              hintText: 'Travellers',
             ),
-            value: _selectedStation,
-            hint: const Text(
-              "Pilih Stasiun",
-              style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          const SizedBox(width: 16), // << jarak antar dropdown
+          Expanded(
+            child: CustomDropdown(
+              value: destinations,
+              width: double.infinity,
+              hintText: 'Class',
             ),
-            // End - Styling dropdown
-
-            items: _stationsList.map((station) {
-              return DropdownMenuItem<String>(
-                value: station,
-                child: Text(station, style: const TextStyle(fontSize: 20)),
-              );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                _selectedStation = value;
-              });
-            }),
+          ),
+        ],
       ),
     );
   }
